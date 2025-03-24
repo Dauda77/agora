@@ -6,7 +6,7 @@ import { getDbUserId } from "./user.action";
 export async function getNotifications(id: string) {
     try {
       const userId = await getDbUserId();
-      if (!userId) return [];
+      if (!userId) return 0;
   
       const notifications = await prisma.notification.findMany({
         where: {
