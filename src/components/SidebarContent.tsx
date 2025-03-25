@@ -29,7 +29,7 @@ async function SidebarContent  () {
             >
                 <span>                
               <Avatar className="w-20 h-20 border-2 ">
-                <AvatarImage src={user.image || "/avatar.png"} />
+                <AvatarImage src={authUser?.imageUrl || "/avatar.png"} />
               </Avatar>
 
               <div className="mt-4 space-y-1">

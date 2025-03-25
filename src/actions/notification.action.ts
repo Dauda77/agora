@@ -3,9 +3,9 @@
 import prisma from "@/lib/prisma";
 import { getDbUserId } from "./user.action";
 
-export async function getNotifications() { // Remove id parameter
+export async function getNotifications() { 
   try {
-    const userId = await getDbUserId(); // Get userId from DB
+    const userId = await getDbUserId(); 
     if (!userId) return [];
 
     const notifications = await prisma.notification.findMany({
