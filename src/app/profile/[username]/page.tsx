@@ -1,9 +1,29 @@
-import { getProfileByUsername, getUserLikedPosts, getUserPosts, isFollowing } from "@/actions/profile.action";
+import type { Metadata } from 'next'
 import { notFound } from "next/navigation";
 import ProfilePageClient from "./ProfilePageClient";
 
+import { 
+  getProfileByUsername, 
+  getUserLikedPosts, 
+  getUserPosts, 
+  isFollowing 
+} from "@/actions/profile.action";
 
-export async function generateMetadata({ params} : { params: {username : string } } ) {
+// Define parameters explicitly as Next.js expects
+export interface Params {
+  username: string;
+}
+
+// Define page props to match Next.js expectations
+export interface PageProps {
+  params: Params;
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+// Metadata generation function
+export async function generateMetadata({ 
+  params 
+}: PageProps): Promise<Metadata> {
     const user = await getProfileByUsername(params.username);
     if(!user) return {};
 
@@ -13,9 +33,11 @@ export async function generateMetadata({ params} : { params: {username : string 
     }
 }
 
-async function ProfilePageServer( { params } : { params: {username : string } } ) { 
+// Page component with explicit typing
+export default async function ProfilePage({ 
+  params 
+}: PageProps) { 
     const user = await getProfileByUsername(params.username); 
-
 
     if (!user) return notFound();
 
@@ -23,22 +45,16 @@ async function ProfilePageServer( { params } : { params: {username : string } } 
         getUserPosts(user.id),
         getUserLikedPosts(user.id),
         isFollowing(user.id),
-        
     ])
+    
 
-
+    return <ProfilePageClient 
+        user={user} 
+        posts={posts} 
+        likedPosts={likedPosts} 
+        isFollowing={isCurrentUserFollowing} 
+    />;
+}
 
 //   console.log("params:", params);
 //   await new Promise((resolve) => setTimeout(resolve, 3000));
-
-  return (
-    <ProfilePageClient 
-     user={user}
-     posts={posts}
-     likedPosts={likedPosts}
-     isFollowing={isCurrentUserFollowing}
-    />
-  )
-}
-
-export default ProfilePageServer
